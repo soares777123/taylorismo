@@ -1,176 +1,184 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Taylorismo 3D - Fábrica</title>
+  <meta charset="UTF-8">
+  <title>Quiz: Taylorismo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
 
-<style>
-  body { margin:0; overflow:hidden; font-family: Arial; }
+    .quiz-container {
+      background: rgba(0,0,0,0.7);
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 600px;
+      margin: auto;
+    }
 
-  #info {
-    position:absolute;
-    top:10px;
-    left:10px;
-    background:rgba(0,0,0,0.7);
-    color:white;
-    padding:12px;
-    max-width:320px;
-    border-radius:8px;
-  }
-</style>
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .question {
+      font-size: 20px;
+      margin: 20px 0;
+    }
+
+    .answers button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .answers button:hover {
+      background-color: #45a049;
+    }
+
+    #nextBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: orange;
+      cursor: pointer;
+      display: none;
+    }
+
+    #score {
+      font-size: 22px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
-
 <body>
 
-<div id="info">
-  <h3>Simulação Taylorista</h3>
-  <p id="texto">Movimente-se com W A S D</p>
-</div>
+  <div class="quiz-container">
+    <h1>Quiz sobre Taylorismo</h1>
+    <div id="question" class="question"></div>
+    <div id="answers" class="answers"></div>
+    <button id="nextBtn">Próxima</button>
+    <div id="score"></div>
+  </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    const quiz = [
+      {
+        question: "Quem foi o criador do Taylorismo?",
+        answers: ["Karl Marx", "Henry Ford", "Frederick Taylor", "Adam Smith"],
+        correct: 2
+      },
+      {
+        question: "Qual era o principal objetivo do Taylorismo?",
+        answers: [
+          "Aumentar o lazer dos trabalhadores",
+          "Aumentar a produtividade",
+          "Diminuir o lucro",
+          "Eliminar fábricas"
+        ],
+        correct: 1
+      },
+      {
+        question: "O Taylorismo também é conhecido como:",
+        answers: [
+          "Produção artesanal",
+          "Administração científica",
+          "Socialismo industrial",
+          "Capitalismo liberal"
+        ],
+        correct: 1
+      },
+      {
+        question: "Uma característica do Taylorismo é:",
+        answers: [
+          "Trabalho livre e criativo",
+          "Divisão de tarefas",
+          "Fim da hierarquia",
+          "Autonomia total do trabalhador"
+        ],
+        correct: 1
+      },
+      {
+        question: "No Taylorismo, o trabalhador:",
+        answers: [
+          "Planeja e executa",
+          "Só executa tarefas definidas",
+          "Decide o salário",
+          "Trabalha sem supervisão"
+        ],
+        correct: 1
+      }
+    ];
 
-<script>
+    let currentQuestion = 0;
+    let score = 0;
 
-let scene, camera, renderer;
-let worker, task;
-let keys = {};
-let etapa = 0;
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const nextBtn = document.getElementById("nextBtn");
+    const scoreEl = document.getElementById("score");
 
-init();
-animate();
+    function showQuestion() {
+      resetState();
+      let q = quiz[currentQuestion];
+      questionEl.innerText = q.question;
 
-function init(){
+      q.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.innerText = answer;
+        button.onclick = () => selectAnswer(index);
+        answersEl.appendChild(button);
+      });
+    }
 
-  scene = new THREE.Scene();
+    function resetState() {
+      nextBtn.style.display = "none";
+      answersEl.innerHTML = "";
+    }
 
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,1000);
-  camera.position.set(0,6,10);
+    function selectAnswer(index) {
+      const correct = quiz[currentQuestion].correct;
 
-  renderer = new THREE.WebGLRenderer({antialias:true});
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+      if (index === correct) {
+        score++;
+        alert("✅ Resposta correta!");
+      } else {
+        alert("❌ Resposta errada!");
+      }
 
-  // Luz
-  const light = new THREE.DirectionalLight(0xffffff,1);
-  light.position.set(10,20,10);
-  scene.add(light);
+      nextBtn.style.display = "block";
+    }
 
-  const ambient = new THREE.AmbientLight(0xffffff,0.4);
-  scene.add(ambient);
+    nextBtn.onclick = () => {
+      currentQuestion++;
+      if (currentQuestion < quiz.length) {
+        showQuestion();
+      } else {
+        showScore();
+      }
+    };
 
-  // TEXTURA DO CHÃO (imagem 1)
-  const textureLoader = new THREE.TextureLoader();
-  const floorTexture = textureLoader.load('fabrica1.jpg');
+    function showScore() {
+      questionEl.innerText = "Fim do Quiz!";
+      answersEl.innerHTML = "";
+      nextBtn.style.display = "none";
+      scoreEl.innerText = "Sua pontuação: " + score + " de " + quiz.length;
+    }
 
-  const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(60,60),
-    new THREE.MeshStandardMaterial({
-      map: floorTexture
-    })
-  );
-
-  floor.rotation.x = -Math.PI/2;
-  scene.add(floor);
-
-  // PAINEL HISTÓRICO (imagem 2)
-  const wallTexture = textureLoader.load('fabrica2.jpg');
-
-  const wall = new THREE.Mesh(
-    new THREE.PlaneGeometry(12,6),
-    new THREE.MeshBasicMaterial({ map: wallTexture })
-  );
-
-  wall.position.set(0,3,-15);
-  scene.add(wall);
-
-  // Trabalhador
-  worker = new THREE.Mesh(
-    new THREE.BoxGeometry(1,2,1),
-    new THREE.MeshStandardMaterial({color: 0x00ff00})
-  );
-  worker.position.y = 1;
-  scene.add(worker);
-
-  createTask();
-
-  document.addEventListener("keydown", (e)=> keys[e.key.toLowerCase()] = true);
-  document.addEventListener("keyup", (e)=> keys[e.key.toLowerCase()] = false);
-}
-
-function createTask(){
-  if(task) scene.remove(task);
-
-  task = new THREE.Mesh(
-    new THREE.BoxGeometry(1,1,1),
-    new THREE.MeshStandardMaterial({color: 0xff0000})
-  );
-
-  task.position.set(
-    Math.random()*20 -10,
-    0.5,
-    Math.random()*20 -10
-  );
-
-  scene.add(task);
-}
-
-function move(){
-
-  let speed = 0.1;
-
-  if(keys["w"]) worker.position.z -= speed;
-  if(keys["s"]) worker.position.z += speed;
-  if(keys["a"]) worker.position.x -= speed;
-  if(keys["d"]) worker.position.x += speed;
-
-  camera.position.x = worker.position.x;
-  camera.position.z = worker.position.z + 10;
-  camera.lookAt(worker.position);
-}
-
-function checkCollision(){
-
-  let dx = worker.position.x - task.position.x;
-  let dz = worker.position.z - task.position.z;
-
-  if(Math.sqrt(dx*dx + dz*dz) < 1.5){
-    etapa++;
-    mostrarTexto();
-    createTask();
-  }
-}
-
-function mostrarTexto(){
-
-  let texto = document.getElementById("texto");
-
-  if(etapa === 1){
-    texto.innerHTML = "Observe a fábrica: trabalho repetitivo e organizado.";
-  }
-  else if(etapa === 2){
-    texto.innerHTML = "Cada trabalhador realiza apenas UMA função.";
-  }
-  else if(etapa === 3){
-    texto.innerHTML = "Controle do tempo aumenta a produtividade.";
-  }
-  else if(etapa === 4){
-    texto.innerHTML = "O trabalhador perde autonomia.";
-  }
-  else{
-    texto.innerHTML = "Você vivenciou o Taylorismo na prática.";
-  }
-}
-
-function animate(){
-  requestAnimationFrame(animate);
-
-  move();
-  checkCollision();
-
-  renderer.render(scene,camera);
-}
-
-</script>
+    showQuestion();
+  </script>
 
 </body>
 </html>
