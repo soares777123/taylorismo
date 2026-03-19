@@ -1,184 +1,209 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Quiz: Taylorismo</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #1e3c72, #2a5298);
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
+<meta charset="UTF-8">
+<title>Quiz Taylorismo</title>
 
-    .quiz-container {
-      background: rgba(0,0,0,0.7);
-      padding: 20px;
-      border-radius: 15px;
-      max-width: 600px;
-      margin: auto;
-    }
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #141e30, #243b55);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    h1 {
-      margin-bottom: 10px;
-    }
+.quiz-box {
+  background: #1f2a38;
+  padding: 25px;
+  border-radius: 15px;
+  width: 600px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  text-align: center;
+}
 
-    .question {
-      font-size: 20px;
-      margin: 20px 0;
-    }
+h1 {
+  margin-bottom: 10px;
+}
 
-    .answers button {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      background-color: #4CAF50;
-      color: white;
-      transition: 0.3s;
-    }
+.progress {
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #ccc;
+}
 
-    .answers button:hover {
-      background-color: #45a049;
-    }
+.question {
+  font-size: 20px;
+  margin: 20px 0;
+}
 
-    #nextBtn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      background-color: orange;
-      cursor: pointer;
-      display: none;
-    }
+.answers button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #3498db;
+  color: white;
+  transition: 0.3s;
+}
 
-    #score {
-      font-size: 22px;
-      margin-top: 20px;
-    }
-  </style>
+.answers button:hover {
+  background-color: #2980b9;
+}
+
+.correct {
+  background-color: #2ecc71 !important;
+}
+
+.wrong {
+  background-color: #e74c3c !important;
+}
+
+#nextBtn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: orange;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  display: none;
+}
+
+.score {
+  margin-top: 15px;
+  font-size: 18px;
+}
+
+.final {
+  font-size: 22px;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="quiz-container">
-    <h1>Quiz sobre Taylorismo</h1>
-    <div id="question" class="question"></div>
-    <div id="answers" class="answers"></div>
-    <button id="nextBtn">Próxima</button>
-    <div id="score"></div>
-  </div>
+<div class="quiz-box">
+  <h1>📚 Quiz: Taylorismo</h1>
+  <div class="progress" id="progress"></div>
+  <div class="question" id="question"></div>
+  <div class="answers" id="answers"></div>
+  <button id="nextBtn">Próxima</button>
+  <div class="score" id="score"></div>
+</div>
 
-  <script>
-    const quiz = [
-      {
-        question: "Quem foi o criador do Taylorismo?",
-        answers: ["Karl Marx", "Henry Ford", "Frederick Taylor", "Adam Smith"],
-        correct: 2
-      },
-      {
-        question: "Qual era o principal objetivo do Taylorismo?",
-        answers: [
-          "Aumentar o lazer dos trabalhadores",
-          "Aumentar a produtividade",
-          "Diminuir o lucro",
-          "Eliminar fábricas"
-        ],
-        correct: 1
-      },
-      {
-        question: "O Taylorismo também é conhecido como:",
-        answers: [
-          "Produção artesanal",
-          "Administração científica",
-          "Socialismo industrial",
-          "Capitalismo liberal"
-        ],
-        correct: 1
-      },
-      {
-        question: "Uma característica do Taylorismo é:",
-        answers: [
-          "Trabalho livre e criativo",
-          "Divisão de tarefas",
-          "Fim da hierarquia",
-          "Autonomia total do trabalhador"
-        ],
-        correct: 1
-      },
-      {
-        question: "No Taylorismo, o trabalhador:",
-        answers: [
-          "Planeja e executa",
-          "Só executa tarefas definidas",
-          "Decide o salário",
-          "Trabalha sem supervisão"
-        ],
-        correct: 1
-      }
-    ];
+<script>
+const quiz = [
+  {
+    question: "Quem criou o Taylorismo?",
+    answers: ["Karl Marx", "Henry Ford", "Frederick Taylor", "Adam Smith"],
+    correct: 2
+  },
+  {
+    question: "Qual era o principal objetivo?",
+    answers: ["Aumentar o lazer", "Aumentar produtividade", "Diminuir lucro", "Eliminar fábricas"],
+    correct: 1
+  },
+  {
+    question: "Taylorismo também é chamado de:",
+    answers: ["Produção artesanal", "Administração científica", "Socialismo", "Capitalismo selvagem"],
+    correct: 1
+  },
+  {
+    question: "Uma característica do Taylorismo:",
+    answers: ["Criatividade livre", "Divisão de tarefas", "Sem hierarquia", "Autonomia total"],
+    correct: 1
+  },
+  {
+    question: "No Taylorismo, o trabalhador:",
+    answers: ["Planeja tudo", "Só executa tarefas", "Define salário", "Trabalha sem controle"],
+    correct: 1
+  }
+];
 
-    let currentQuestion = 0;
-    let score = 0;
+let current = 0;
+let score = 0;
+let respondeuCorreto = false;
 
-    const questionEl = document.getElementById("question");
-    const answersEl = document.getElementById("answers");
-    const nextBtn = document.getElementById("nextBtn");
-    const scoreEl = document.getElementById("score");
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const nextBtn = document.getElementById("nextBtn");
+const scoreEl = document.getElementById("score");
+const progressEl = document.getElementById("progress");
 
-    function showQuestion() {
-      resetState();
-      let q = quiz[currentQuestion];
-      questionEl.innerText = q.question;
+function showQuestion() {
+  respondeuCorreto = false;
+  nextBtn.style.display = "none";
+  answersEl.innerHTML = "";
 
-      q.answers.forEach((answer, index) => {
-        const button = document.createElement("button");
-        button.innerText = answer;
-        button.onclick = () => selectAnswer(index);
-        answersEl.appendChild(button);
-      });
-    }
+  let q = quiz[current];
 
-    function resetState() {
-      nextBtn.style.display = "none";
-      answersEl.innerHTML = "";
-    }
+  progressEl.innerText = "Pergunta " + (current + 1) + " de " + quiz.length;
+  questionEl.innerText = q.question;
 
-    function selectAnswer(index) {
-      const correct = quiz[currentQuestion].correct;
+  q.answers.forEach((answer, index) => {
+    const btn = document.createElement("button");
+    btn.innerText = answer;
 
-      if (index === correct) {
-        score++;
-        alert("✅ Resposta correta!");
-      } else {
-        alert("❌ Resposta errada!");
-      }
+    btn.onclick = () => checkAnswer(btn, index);
 
-      nextBtn.style.display = "block";
-    }
+    answersEl.appendChild(btn);
+  });
+}
 
-    nextBtn.onclick = () => {
-      currentQuestion++;
-      if (currentQuestion < quiz.length) {
-        showQuestion();
-      } else {
-        showScore();
-      }
-    };
+function checkAnswer(button, index) {
+  const correct = quiz[current].correct;
 
-    function showScore() {
-      questionEl.innerText = "Fim do Quiz!";
-      answersEl.innerHTML = "";
-      nextBtn.style.display = "none";
-      scoreEl.innerText = "Sua pontuação: " + score + " de " + quiz.length;
-    }
+  if (respondeuCorreto) return;
 
+  if (index === correct) {
+    button.classList.add("correct");
+    score += 10;
+    respondeuCorreto = true;
+    nextBtn.style.display = "block";
+    scoreEl.innerText = "Pontuação: " + score;
+  } else {
+    button.classList.add("wrong");
+    score -= 2; // penalidade pedagógica
+    scoreEl.innerText = "Pontuação: " + score;
+  }
+}
+
+nextBtn.onclick = () => {
+  current++;
+  if (current < quiz.length) {
     showQuestion();
-  </script>
+  } else {
+    showFinal();
+  }
+};
+
+function showFinal() {
+  questionEl.innerHTML = "🎉 Fim do Quiz!";
+  answersEl.innerHTML = "";
+  nextBtn.style.display = "none";
+
+  let mensagem = "";
+
+  if (score >= 40) {
+    mensagem = "Excelente! Você domina o Taylorismo.";
+  } else if (score >= 25) {
+    mensagem = "Bom! Mas ainda pode melhorar.";
+  } else {
+    mensagem = "Precisa revisar o conteúdo.";
+  }
+
+  scoreEl.innerHTML = `<div class="final">Pontuação final: ${score}<br>${mensagem}</div>`;
+}
+
+showQuestion();
+</script>
 
 </body>
 </html>
