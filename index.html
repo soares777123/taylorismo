@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Jogo 3D - Taylorismo</title>
+  <title>Taylorismo 3D</title>
   <style>
     body { margin: 0; overflow: hidden; font-family: Arial; }
     #info {
@@ -11,8 +11,9 @@
       left: 10px;
       background: rgba(0,0,0,0.7);
       color: white;
-      padding: 10px;
+      padding: 12px;
       max-width: 300px;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -20,9 +21,7 @@
 
 <div id="info">
   <h3>Taylorismo</h3>
-  <p id="texto">
-    Use as setas para mover o trabalhador.
-  </p>
+  <p id="texto">Use W A S D para se mover.</p>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -30,7 +29,8 @@
 <script>
 let scene, camera, renderer;
 let worker, task;
-let speed = 0.1;
+let keys = {};
+let speed = 0.08;
 let etapa = 0;
 
 init();
@@ -38,25 +38,31 @@ animate();
 
 function init() {
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xaaaaaa);
+  scene.background = new THREE.Color(0x999999);
 
   camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera.position.y = 5;
-  camera.position.z = 10;
+  camera.position.set(0,6,10);
 
-  renderer = new THREE.WebGLRenderer();
+  renderer = new THREE.WebGLRenderer({antialias:true});
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  // Luz
+  // Luz ambiente
+  const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambient);
+
+  // Luz principal
   const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(5,10,7);
+  light.position.set(10,15,10);
   scene.add(light);
 
-  // Chão
+  // Chão com textura simulada
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(50,50),
-    new THREE.MeshStandardMaterial({color: 0x555555})
+    new THREE.MeshStandardMaterial({
+      color: 0x777777,
+      roughness: 0.9
+    })
   );
   floor.rotation.x = -Math.PI/2;
   scene.add(floor);
@@ -64,16 +70,15 @@ function init() {
   // Trabalhador
   worker = new THREE.Mesh(
     new THREE.BoxGeometry(1,2,1),
-    new THREE.MeshStandardMaterial({color: 0x00ff00})
+    new THREE.MeshStandardMaterial({color: 0x2ecc71})
   );
   worker.position.y = 1;
   scene.add(worker);
 
-  // Tarefa
   createTask();
 
-  // Controles
-  document.addEventListener("keydown", move);
+  document.addEventListener("keydown", (e)=> keys[e.key.toLowerCase()] = true);
+  document.addEventListener("keyup", (e)=> keys[e.key.toLowerCase()] = false);
 }
 
 function createTask() {
@@ -81,7 +86,7 @@ function createTask() {
 
   task = new THREE.Mesh(
     new THREE.BoxGeometry(1,1,1),
-    new THREE.MeshStandardMaterial({color: 0xff0000})
+    new THREE.MeshStandardMaterial({color: 0xe74c3c})
   );
 
   task.position.set(
@@ -93,13 +98,23 @@ function createTask() {
   scene.add(task);
 }
 
-function move(e) {
-  switch(e.key) {
-    case "ArrowUp": worker.position.z -= speed; break;
-    case "ArrowDown": worker.position.z += speed; break;
-    case "ArrowLeft": worker.position.x -= speed; break;
-    case "ArrowRight": worker.position.x += speed; break;
+function move() {
+  let moving = false;
+
+  if(keys["w"]) { worker.position.z -= speed; moving = true; }
+  if(keys["s"]) { worker.position.z += speed; moving = true; }
+  if(keys["a"]) { worker.position.x -= speed; moving = true; }
+  if(keys["d"]) { worker.position.x += speed; moving = true; }
+
+  // Rotação leve para direção
+  if(moving){
+    worker.rotation.y += 0.05;
   }
+
+  // câmera segue o jogador
+  camera.position.x = worker.position.x;
+  camera.position.z = worker.position.z + 10;
+  camera.lookAt(worker.position);
 }
 
 function checkCollision() {
@@ -117,25 +132,26 @@ function mostrarExplicacao() {
   let texto = document.getElementById("texto");
 
   if(etapa === 1) {
-    texto.innerHTML = "Taylorismo: sistema criado por Frederick Taylor para aumentar a produtividade.";
+    texto.innerHTML = "Taylorismo: organização científica do trabalho.";
   }
   else if(etapa === 2) {
-    texto.innerHTML = "Divisão do trabalho: cada trabalhador realiza apenas uma tarefa específica.";
+    texto.innerHTML = "Divisão extrema das tarefas.";
   }
   else if(etapa === 3) {
-    texto.innerHTML = "Tempo e movimento: busca pela forma mais rápida de executar tarefas.";
+    texto.innerHTML = "Controle do tempo e movimentos.";
   }
   else if(etapa === 4) {
-    texto.innerHTML = "Controle rígido: supervisão constante do trabalhador.";
+    texto.innerHTML = "Foco na produtividade, não no trabalhador.";
   }
   else {
-    texto.innerHTML = "Parabéns! Você experimentou o trabalho repetitivo do Taylorismo.";
+    texto.innerHTML = "Você sentiu a repetição do trabalho taylorista.";
   }
 }
 
 function animate() {
   requestAnimationFrame(animate);
 
+  move();
   checkCollision();
 
   renderer.render(scene, camera);
